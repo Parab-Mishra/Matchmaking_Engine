@@ -27,6 +27,17 @@ func CreateProfileHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    // Validate gender and genderSeeking fields
+    if profile.Gender != "M" && profile.Gender != "F" {
+        http.Error(w, "Gender must be 'M' or 'F'", http.StatusBadRequest)
+        return
+    }
+
+    if profile.GenderSeeking != "M" && profile.GenderSeeking != "F" && profile.GenderSeeking != "B" {
+        http.Error(w, "GenderSeeking must be 'M', 'F', or 'B'", http.StatusBadRequest)
+        return
+    }
+
     geohash := core.GetGeohash(profile)
     data.StoreProfile(profile, geohash)
     core.PrecomputeMatches(profile)
@@ -43,6 +54,7 @@ func MatchHandler(w http.ResponseWriter, r *http.Request) {
     // Parse query parameters for pagination
     pageStr := r.URL.Query().Get("page")
     pageSizeStr := r.URL.Query().Get("pageSize")
+    genderFilter := r.URL.Query().Get("gender")
     
     // Default values
     page := 1
@@ -62,8 +74,30 @@ func MatchHandler(w http.ResponseWriter, r *http.Request) {
         }
     }
     
+    // Validate gender filter if provided
+    if genderFilter != "" && genderFilter != "M" && genderFilter != "F" && genderFilter != "B" {
+        http.Error(w, "Gender filter must be 'M', 'F', or 'B'", http.StatusBadRequest)
+        return
+    }
+    
     // Get all matches for the user
     allMatches := core.GetAllMatches(id)
+    
+    // Apply gender filter if specified
+    if genderFilter != "" {
+        filteredMatches := []data.MatchResult{}
+        for _, match := range allMatches {
+            // Get the profile for this match
+            if matchProfile, exists := data.GetProfile(match.ID); exists {
+                // Only include if it matches the gender filter
+                if genderFilter == "B" || matchProfile.Gender == genderFilter {
+                    filteredMatches = append(filteredMatches, match)
+                }
+            }
+        }
+        allMatches = filteredMatches
+    }
+    
     totalCount := len(allMatches)
     
     // Calculate pagination values
