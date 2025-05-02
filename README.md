@@ -2,6 +2,7 @@
 A high-performance in-memory matchmaking engine for a dating app.
 
 HOW TO RUN
+
 //Install dependencies
 go mod tidy
 
