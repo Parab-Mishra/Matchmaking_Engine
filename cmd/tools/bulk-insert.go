@@ -19,12 +19,13 @@ type Location struct {
 }
 
 type Profile struct {
-    ID        string   `json:"id"`
-    Age       int      `json:"age"`
-    Gender    string   `json:"gender"`
-    Location  Location `json:"location"`
-    Interests []string `json:"interests"`
-	Bio       string   `json:"bio,omitempty"` // Optional: add in your profile.go if supported
+    ID            string   `json:"id"`
+    Age           int      `json:"age"`
+    Gender        string   `json:"gender"`
+    GenderSeeking string   `json:"genderSeeking"`
+    Location      Location `json:"location"`
+    Interests     []string `json:"interests"`
+	Bio           string   `json:"bio,omitempty"`
 }
 
 var sampleInterests = []string{
@@ -52,14 +53,27 @@ func randFloat(min, max float64) float64 {
 
 func generateProfile(i int) Profile {
     gender := []string{"M", "F"}[rand.Intn(2)]
+    
+    // Generate gender seeking preference
+    var genderSeeking string
+    switch rand.Intn(3) {
+    case 0:
+        genderSeeking = "M"
+    case 1:
+        genderSeeking = "F"
+    case 2:
+        genderSeeking = "B" // Both
+    }
+    
     lat, lon := randomLatLonIndia()
     return Profile{
-        ID:        "user" + strconv.Itoa(i),
-        Age:       rand.Intn(20) + 20, // 20-39
-        Gender:    gender,
-        Location:  Location{Lat: lat, Lon: lon},
-        Interests: randomInterests(),
-		Bio:       faker.Sentence(),
+        ID:            "user" + strconv.Itoa(i),
+        Age:           rand.Intn(20) + 20, // 20-39
+        Gender:        gender,
+        GenderSeeking: genderSeeking,
+        Location:      Location{Lat: lat, Lon: lon},
+        Interests:     randomInterests(),
+		Bio:           faker.Sentence(),
     }
 }
 
@@ -81,7 +95,8 @@ func main() {
             fmt.Printf("Error inserting user%d: %v\n", i, err)
             continue
         }
-        fmt.Printf("Inserted %s (status: %d)\n", profile.ID, resp.StatusCode)
+        fmt.Printf("Inserted %s (Gender: %s, Seeking: %s, status: %d)\n", 
+            profile.ID, profile.Gender, profile.GenderSeeking, resp.StatusCode)
         resp.Body.Close()
     }
 }

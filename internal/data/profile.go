@@ -6,12 +6,13 @@ type Location struct {
 }
 
 type Profile struct {
-    ID        string   `json:"id"`
-    Age       int      `json:"age"`
-    Gender    string   `json:"gender"`
-    Location  Location `json:"location"`
-    Interests []string `json:"interests"`
-	Bio       string   `json:"bio,omitempty"` // Optional: add in your profile.go if supported
+    ID             string   `json:"id"`
+    Age            int      `json:"age"`
+    Gender         string   `json:"gender"`          // "M", "F"
+    GenderSeeking  string   `json:"genderSeeking"`   // "M", "F", "B" (Both)
+    Location       Location `json:"location"`
+    Interests      []string `json:"interests"`
+    Bio            string   `json:"bio,omitempty"`   // Optional
 }
 
 type MatchResult struct {
