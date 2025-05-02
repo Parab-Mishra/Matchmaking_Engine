@@ -34,3 +34,12 @@ func GetProfile(id string) (Profile, bool) {
     p, ok := profiles[id]
     return p, ok
 }
+
+// GetAllProfiles retrieves all user profiles stored in memory.
+func GetAllProfiles() []Profile {
+    var allProfiles []Profile
+    for _, profile := range profiles {
+        allProfiles = append(allProfiles, profile)
+    }
+    return allProfiles
+}

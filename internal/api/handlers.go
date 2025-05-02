@@ -34,3 +34,21 @@ func MatchHandler(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(matches)
 }
+
+// GetAllProfiles handles the request to fetch all user profiles
+func GetAllProfiles(w http.ResponseWriter, r *http.Request) {
+    // Fetch all profiles from memory
+    profiles := data.GetAllProfiles()
+
+    // Set header as JSON
+    w.Header().Set("Content-Type", "application/json")
+
+    // Respond with JSON of profiles
+    err := json.NewEncoder(w).Encode(profiles)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    fmt.Printf("Fetched %d profiles", len(profiles)) // For debugging
+}
