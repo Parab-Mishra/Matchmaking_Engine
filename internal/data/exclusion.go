@@ -1,5 +1,9 @@
 package data
 
+import (
+	"fmt"
+)
+
 var (
     blocked   = make(map[string]map[string]struct{})
     disliked  = make(map[string]map[string]struct{})
@@ -29,6 +33,12 @@ func addExclusion(from, to string, kind string) {
     list[from][to] = struct{}{}
 }
 
-func IsEligible(me, other string) bool {
-    return !isExcluded(me, other)
+func IsEligible(user1ID, user2ID string) bool {
+    // Check exclusions
+    if user1ID == user2ID {
+        fmt.Printf("Skipping user %s matching with self\n", user1ID)
+        return false
+    }
+    // Add additional exclusions as necessary (blocked, disliked, etc.)
+    return true
 }

@@ -11,6 +11,7 @@ type Profile struct {
     Gender    string   `json:"gender"`
     Location  Location `json:"location"`
     Interests []string `json:"interests"`
+	Bio       string   `json:"bio,omitempty"` // Optional: add in your profile.go if supported
 }
 
 type MatchResult struct {
