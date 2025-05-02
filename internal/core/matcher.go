@@ -6,7 +6,7 @@ import (
     "github.com/Parab-Mishra/Matchmaking_Engine/internal/data"
 )
 
-func GetTopMatches(userID string) []data.MatchResult {
+func GetAllMatches(userID string) []data.MatchResult {
     return data.GetMatchResults(userID)
 }
 
